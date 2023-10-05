@@ -1,4 +1,3 @@
-# Api key: 887e112ed7324c33aedf15d1030b730d
 import requests
 from pprint import pprint
 
@@ -6,7 +5,7 @@ from pprint import pprint
 class NewsFeed:
 	"""Representing multiple news titles and links as a single string"""
 	base_url = "https://newsapi.org/v2/everything?"
-	api_key = "887e112ed7324c33aedf15d1030b730d"
+	api_key = "**************************"
 
 	def __init__(self, interest, from_date, to_date, language):
 		self.interest = interest
