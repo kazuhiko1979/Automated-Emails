@@ -1,35 +1,26 @@
-import requests
-from pprint import pprint
+import yagmail
+import pandas
+from news import NewsFeed
+import datetime
+import time
+
+def send_email():
+	today = datetime.datetime.now().strftime('%Y-%m-%d')
+	yesterday = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+	news_feed = NewsFeed(interest=row['interest'],
+						 from_date=yesterday,
+						 to_date=today)
+	email = yagmail.SMTP(user='******@gmail.com', password="**********")
+	email.send(to=row['email'],
+			   subject=f"Your {row['interest']} news for today!",
+			   contents=f"Hi, {row['name']} \n\nSee What's on about {row['interest']} today. \n{news_feed.get()}\nArdit")
 
 
-class NewsFeed:
-	"""Representing multiple news titles and links as a single string"""
-	base_url = "https://newsapi.org/v2/everything?"
-	api_key = "**************************"
+while True:
+	if datetime.datetime.now().hour == 10 and datetime.datetime.now().minute == 21:
+		df = pandas.read_excel('people.xlsx')
 
-	def __init__(self, interest, from_date, to_date, language):
-		self.interest = interest
-		self.from_date = from_date
-		self.to_date = to_date
-		self.language = language
+		for index, row in df.iterrows():
+			send_email()
 
-	def get(self):
-		url = f"{self.base_url}"\
-			  f"q={self.interest}&"\
-			  f"from={self.from_date}&"\
-			  f"to={self.to_date}&"\
-			  f"language={self.language}&"\
-			  f"apiKey={self.api_key}"
-
-		response = requests.get(url)
-		content = response.json()
-		articles = content['articles']
-
-		email_body = ''
-		for article in articles:
-			email_body = email_body + article['title'] + "\n" + article['url'] + "\n\n"
-
-		return email_body
-
-new_feed = NewsFeed(interest='nasa', from_date='2023-10-04', to_date='2023-10-05', language='en')
-print(new_feed.get())
+	time.sleep(60)
