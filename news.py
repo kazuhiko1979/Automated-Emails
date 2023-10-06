@@ -1,4 +1,3 @@
-# Api key: 887e112ed7324c33aedf15d1030b730d
 import requests
 from pprint import pprint
 
